@@ -120,7 +120,7 @@ export const Login: React.FC = () => {
             </Link>
           </div>
 
-          <div style={{ marginTop: '20px', padding: '12px', backgroundColor: 'rgba(108, 99, 255, 0.1)', borderRadius: '8px', fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'center' }}>
+          <div style={{ marginTop: '20px', padding: '12px', backgroundColor: 'rgba(255, 107, 53, 0.1)', borderRadius: '8px', fontSize: '12px', color: 'var(--text-secondary)', textAlign: 'center' }}>
             Demo credentials:<br />
             Email: <strong>akash@gmail.com</strong><br />
             Password: <strong>123456</strong>

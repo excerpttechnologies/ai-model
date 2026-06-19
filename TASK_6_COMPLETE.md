@@ -165,12 +165,12 @@ const resp = await fetch(`${RAG_API_BASE}/ask/stream`, {
 
 ---
 
-## Testing
+## edu aing
 
 ### **Test the system:**
 ```bash
 # Backend must be running:
-cd testi-student-assessment-platform
+cd edu ai-student-assessment-platform
 source venv/bin/activate  # or venv\Scripts\activate on Windows
 NVIDIA_API_KEY=nvapi-... uvicorn rag_api:app --host 0.0.0.0 --port 8090
 

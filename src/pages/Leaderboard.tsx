@@ -78,7 +78,7 @@ export const Leaderboard: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: idx * 0.1 }}
-                    style={{ borderBottom: '1px solid var(--border)', backgroundColor: idx < 3 ? 'rgba(108, 99, 255, 0.05)' : 'transparent' }}
+                    style={{ borderBottom: '1px solid var(--border)', backgroundColor: idx < 3 ? 'rgba(255, 107, 53, 0.05)' : 'transparent' }}
                   >
                     <td style={{ padding: '20px', fontWeight: '700', fontSize: '18px', color: 'var(--text-primary)' }}>
                       #{idx + 1}

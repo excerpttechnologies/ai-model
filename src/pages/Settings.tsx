@@ -39,7 +39,7 @@ export const Settings: React.FC<SettingsProps> = ({ user }) => {
   const otherSettings = [
     { icon: Globe, label: 'Language', value: 'English', description: 'Change your preferred language' },
     { icon: Lock, label: 'Privacy & Security', description: 'Manage your account security settings' },
-    { icon: HelpCircle, label: 'Help & Support', description: 'Get help with Testi' }
+    { icon: HelpCircle, label: 'Help & Support', description: 'Get help with edu ai' }
   ];
 
   return (
@@ -167,7 +167,7 @@ export const Settings: React.FC<SettingsProps> = ({ user }) => {
                       transition: 'all 0.3s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(108, 99, 255, 0.05)';
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
                       e.currentTarget.style.borderColor = 'var(--primary)';
                     }}
                     onMouseLeave={(e) => {

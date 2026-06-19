@@ -61,7 +61,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               textColor = '#FF6B6B';
             }
           } else if (isSelected) {
-            backgroundColor = 'rgba(108, 99, 255, 0.1)';
+            backgroundColor = 'rgba(255, 107, 53, 0.1)';
             borderColor = 'var(--primary)';
           }
 
@@ -85,7 +85,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({
               }}
               onMouseEnter={(e) => {
                 if (!isReview && !isSelected) {
-                  e.currentTarget.style.backgroundColor = 'rgba(108, 99, 255, 0.05)';
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 107, 53, 0.05)';
                   e.currentTarget.style.borderColor = 'var(--primary)';
                 }
               }}

@@ -20,6 +20,13 @@ Environment variables required (set before starting):
 import os
 import sys
 
+# ── Auto-load .env if present (requires python-dotenv, already in uvicorn[standard]) ──
+try:
+    from dotenv import load_dotenv
+    load_dotenv(override=False)   # environment vars set explicitly always win
+except ImportError:
+    pass  # python-dotenv optional; set vars manually in production
+
 # ── Ensure the project root is on sys.path so rag_query / rag_api are found ──
 ROOT = os.path.dirname(os.path.abspath(__file__))
 if ROOT not in sys.path:
@@ -28,7 +35,7 @@ if ROOT not in sys.path:
 # ── Import the FastAPI app — all logic lives in rag_api.py ───────────────────
 from rag_api import app  # noqa: F401  re-exported for uvicorn
 
-# ── Convenience: run directly with `python app.py` for quick local testing ───
+# ── Convenience: run directly with `python app.py` for quick local edu aing ───
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(

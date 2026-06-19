@@ -14,7 +14,7 @@ const BOARD_COLORS: Record<Board, string> = {
   'CBSE':        '#1565C0',
   'ICSE':        '#F57F17',
   'State Board': '#2E7D32',
-  'General':     '#6C63FF',
+  'General':     '#FF6B35',
 };
 
 export const Assignments: React.FC = () => {
@@ -115,7 +115,7 @@ export const Assignments: React.FC = () => {
                       ? `2px solid ${lc ? lc.color : 'var(--primary)'}`
                       : '1.5px solid var(--border)',
                     backgroundColor: isActive
-                      ? lc ? lc.colorLight : 'rgba(108,99,255,0.1)'
+                      ? lc ? lc.colorLight : 'rgba(255,107,53,0.1)'
                       : 'transparent',
                     borderRadius: '10px',
                     color: isActive

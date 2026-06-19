@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   return (
     <nav
       style={{
-        backgroundColor: 'white',
+        backgroundColor: 'var(--bg-secondary)',
         borderBottom: '1px solid var(--border)',
         padding: '1rem 2rem',
         display: 'flex',
@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
         }}
       >
         <span style={{ fontSize: '24px' }}>📝</span>
-        <span>Testi</span>
+        <span>edu ai</span>
       </Link>
 
       {/* Desktop Menu */}

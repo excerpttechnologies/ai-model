@@ -1,5 +1,5 @@
 /**
- * PM2 ecosystem config — Testi Student Assessment Platform
+ * PM2 ecosystem config — edu ai Student Assessment Platform
  *
  * Entry point: app.py  →  imports FastAPI app from rag_api.py
  *
@@ -18,11 +18,11 @@ module.exports = {
 
       // Point uvicorn at app:app (app.py → rag_api.py → FastAPI instance)
       interpreter: 'none',
-      script: '/var/www/testi/venv/bin/uvicorn',
+      script: '/var/www/edu ai/venv/bin/uvicorn',
       args: 'app:app --host 127.0.0.1 --port 8090 --workers 1',
 
       // ── CHANGE THIS to your actual project path on the VPS ──
-      cwd: '/var/www/testi',
+      cwd: '/var/www/edu ai',
 
       // ── Environment variables ─────────────────────────────────────────────
       // Replace the values below before deploying.
@@ -30,7 +30,7 @@ module.exports = {
       env: {
         LLM_BACKEND:      'nvidia',
         NVIDIA_API_KEY:   'nvapi-REPLACE_WITH_YOUR_KEY',
-        CURRICULUM_DB:    '/var/www/testi/curriculum_db',
+        CURRICULUM_DB:    '/var/www/edu ai/curriculum_db',
         CORS_ORIGINS:     'https://YOUR_DOMAIN,http://YOUR_DOMAIN',
         PYTHONUNBUFFERED: '1',
         PORT:             '8090',
@@ -44,8 +44,8 @@ module.exports = {
       restart_delay:      3000,
 
       // ── Logs ──────────────────────────────────────────────────────────────
-      out_file:        '/var/www/testi/logs/rag-backend-out.log',
-      error_file:      '/var/www/testi/logs/rag-backend-err.log',
+      out_file:        '/var/www/edu ai/logs/rag-backend-out.log',
+      error_file:      '/var/www/edu ai/logs/rag-backend-err.log',
       merge_logs:      true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
     },

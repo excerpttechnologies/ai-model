@@ -2,12 +2,13 @@ import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '../components/Button';
-import { CheckCircle, XCircle, ArrowLeft, Share2, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Share2, TrendingUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ASSIGNMENTS } from '../data/assignments';
 import { QUESTIONS } from '../data/questions';
 import { QuestionCard } from '../components/QuestionCard';
 import { levelFromScore, LEVEL_CONFIG, scoreColor } from '../lib/levelUtils';
+import { FoundationMode } from '../components/FoundationMode';
 
 export const Result: React.FC = () => {
   const { assignmentId } = useParams();
@@ -24,7 +25,7 @@ export const Result: React.FC = () => {
   const lc = LEVEL_CONFIG[achievedLevel];
 
   const handleShare = () => {
-    const text = `I scored ${percentage.toFixed(0)}% on ${assignment?.title} on Testi! ${lc.emoji}`;
+    const text = `I scored ${percentage.toFixed(0)}% on ${assignment?.title} on edu ai! ${lc.emoji}`;
     if (navigator.share) {
       navigator.share({ text });
     } else {
@@ -209,6 +210,31 @@ export const Result: React.FC = () => {
             <Share2 size={18} /> Share Result
           </Button>
         </div>
+
+        {/* ── Foundation / Bridge mode panel ──────────────────────────────────── */}
+        {percentage < 70 && (
+          <FoundationMode
+            score={Math.round(percentage)}
+            subjectTitle={assignment.title}
+            weakTopics={
+              percentage < 50
+                ? ['Core concept understanding', 'Basic terminology', 'Foundational formulas']
+                : ['Advanced application', 'Complex problem solving']
+            }
+            mistakePatterns={
+              percentage < 50
+                ? ['Missed prerequisite steps', 'Calculation errors', 'Misread questions']
+                : ['Partial understanding', 'Incomplete explanations']
+            }
+            missingFundamentals={
+              percentage < 50
+                ? ['Prerequisite chapter revision', 'Key definitions', 'Basic operations']
+                : ['Applied problem patterns', 'Exam question formats']
+            }
+            onStartRecovery={() => navigate('/assignments')}
+            onOpenChatbot={() => navigate('/chatbot')}
+          />
+        )}
 
         {/* ── Answer review ─────────────────────────────────────────────────── */}
         {questions.length > 0 && (

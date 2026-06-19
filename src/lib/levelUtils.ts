@@ -42,10 +42,10 @@ export const LEVEL_CONFIG: Record<
   intermediate: {
     label: 'Intermediate',
     emoji: '⚡',
-    color: '#6C63FF',
-    colorLight: 'rgba(108, 99, 255, 0.12)',
-    colorBorder: 'rgba(108, 99, 255, 0.35)',
-    gradient: 'linear-gradient(135deg, #6C63FF22 0%, #00D08422 100%)',
+    color: '#FF6B35',
+    colorLight: 'rgba(255, 107, 53, 0.12)',
+    colorBorder: 'rgba(255, 107, 53, 0.35)',
+    gradient: 'linear-gradient(135deg, #FF6B3522 0%, #00D08422 100%)',
     description: "You're building solid skills — keep pushing forward.",
     nextStepHint: 'Score above 80% to unlock Advanced tests.',
   },
@@ -55,7 +55,7 @@ export const LEVEL_CONFIG: Record<
     color: '#00D084',
     colorLight: 'rgba(0, 208, 132, 0.12)',
     colorBorder: 'rgba(0, 208, 132, 0.35)',
-    gradient: 'linear-gradient(135deg, #00D08422 0%, #6C63FF22 100%)',
+    gradient: 'linear-gradient(135deg, #00D08422 0%, #FF6B3522 100%)',
     description: 'Excellent work — you are among the top performers!',
     nextStepHint: 'Challenge yourself with creation and evaluation questions.',
   },
@@ -64,6 +64,6 @@ export const LEVEL_CONFIG: Record<
 /** Returns the CSS hex color for a pass/fail percentage bar */
 export function scoreColor(pct: number): string {
   if (pct >= 81) return '#00D084';
-  if (pct >= 50) return '#6C63FF';
+  if (pct >= 50) return '#FF6B35';
   return '#FF6B6B';
 }

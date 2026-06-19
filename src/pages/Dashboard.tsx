@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { StatsCard } from '../components/StatsCard';
 import { AssignmentCard } from '../components/AssignmentCard';
-import { BookOpen, CheckCircle, BarChart3, Target, TrendingUp, Flame, Star, Zap } from 'lucide-react';
+import { BookOpen, CheckCircle, BarChart3, Target, TrendingUp, Flame, Star, Zap, ShieldAlert } from 'lucide-react';
 import { ASSIGNMENTS, WEEKLY_PLAN_TEMPLATE } from '../data/assignments';
 import { RESULTS } from '../data/results';
 import { User } from '../hooks/useAuth';
@@ -18,7 +18,7 @@ const BOARD_CONFIG: Record<string, { color: string; bg: string; label: string }>
   'CBSE':        { color: '#1565C0', bg: 'rgba(21,101,192,0.1)',  label: 'CBSE' },
   'ICSE':        { color: '#F57F17', bg: 'rgba(245,127,23,0.1)',  label: 'ICSE' },
   'State Board': { color: '#2E7D32', bg: 'rgba(46,125,50,0.1)',   label: 'State Board' },
-  'General':     { color: '#6C63FF', bg: 'rgba(108,99,255,0.1)',  label: 'General' },
+  'General':     { color: '#FF6B35', bg: 'rgba(255,107,53,0.1)',  label: 'General' },
 };
 
 export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
@@ -63,6 +63,66 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       <Sidebar />
       <main style={{ flex: 1, padding: '28px 30px', maxWidth: 'calc(100vw - 250px)', overflowX: 'hidden' }}>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }}>
+
+          {/* ══ FOUNDATION MODE ALERT BANNER (auto-shows when avg score < 50%) ══ */}
+          {avgScore < 50 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              onClick={() => navigate('/foundation')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '14px 20px', borderRadius: '12px',
+                backgroundColor: 'rgba(255,107,107,0.08)',
+                border: '1.5px solid rgba(255,107,107,0.4)',
+                marginBottom: '20px', cursor: 'pointer',
+              }}
+            >
+              <ShieldAlert size={22} style={{ color: '#FF6B6B', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: '14px', fontWeight: '700', color: '#FF6B6B', margin: 0 }}>
+                  📉 Foundation Mode Active — Your average score is {avgScore}%
+                </p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, marginTop: '2px' }}>
+                  Don't worry — click here to start your 7-day recovery plan. You CAN improve!
+                </p>
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: '600', color: '#FF6B6B', padding: '6px 14px', borderRadius: '8px', backgroundColor: 'rgba(255,107,107,0.15)', flexShrink: 0 }}>
+                Start Recovery →
+              </span>
+            </motion.div>
+          )}
+
+          {/* ══ BRIDGE MODE NUDGE (50-70%) ══ */}
+          {avgScore >= 50 && avgScore < 70 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              onClick={() => navigate('/foundation')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '14px 20px', borderRadius: '12px',
+                backgroundColor: 'rgba(255,184,77,0.08)',
+                border: '1.5px solid rgba(255,184,77,0.4)',
+                marginBottom: '20px', cursor: 'pointer',
+              }}
+            >
+              <Zap size={22} style={{ color: '#FFB84D', flexShrink: 0 }} />
+              <div style={{ flex: 1 }}>
+                <p style={{ fontSize: '14px', fontWeight: '700', color: '#FFB84D', margin: 0 }}>
+                  🌉 Bridge Mode — You're at {avgScore}%. Keep pushing toward 70%!
+                </p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0, marginTop: '2px' }}>
+                  You're making progress. Click to continue your bridge learning plan.
+                </p>
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: '600', color: '#FFB84D', padding: '6px 14px', borderRadius: '8px', backgroundColor: 'rgba(255,184,77,0.15)', flexShrink: 0 }}>
+                Continue →
+              </span>
+            </motion.div>
+          )}
 
           {/* ══ HERO BANNER ════════════════════════════════════════════════ */}
           <motion.div

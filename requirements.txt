@@ -7,3 +7,4 @@ chromadb==0.5.23
 requests==2.32.3
 openai==1.57.0          # NVIDIA Nemotron via OpenAI-compatible endpoint
 anthropic==0.40.0       # optional: only needed if LLM_BACKEND=anthropic
+pymupdf==1.25.5         # PDF ingestion — used by ingest.py only

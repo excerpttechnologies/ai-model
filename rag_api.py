@@ -1,5 +1,5 @@
 """
-rag_api.py — FastAPI backend for the Testi Student Assessment Platform.
+rag_api.py — FastAPI backend for the edu ai Student Assessment Platform.
 
 LLM: NVIDIA Nemotron-3-Ultra-550B (streaming + reasoning) via integrate.api.nvidia.com
 Embeddings: local Ollama all-minilm (never changes)
@@ -16,7 +16,7 @@ Run:
 import json
 import os
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional
+from typing import AsyncGenerator, Optional, List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,6 +30,9 @@ from rag_query import (
     ask_stream,
     quiz_core,
     level_from_score,
+    LLM_BACKEND,
+    OPENAI_MODEL,
+    NVIDIA_MODEL,
 )
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -49,16 +52,18 @@ async def lifespan(app: FastAPI):
     try:
         _collection = get_collection(CURRICULUM_DB)
         count = _collection.count()
+        active_model = OPENAI_MODEL if LLM_BACKEND == "openai" else NVIDIA_MODEL
         print(f"[startup] Chroma collection loaded — {count} chunks from {CURRICULUM_DB}")
+        print(f"[startup] LLM backend: {LLM_BACKEND.upper()} / model: {active_model}")
     except Exception as e:
         print(f"[startup] WARNING: Could not load Chroma collection: {e}")
         print(f"[startup] DB path: {CURRICULUM_DB}")
-        print("[startup] /health will return chunks=-1, /ask will return graceful error")
+        print("[startup] Run:  python ingest.py --source ./books --db ./curriculum_db")
         _collection = None
     yield
 
 
-app = FastAPI(title="Testi Curriculum RAG API", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="edu ai Curriculum RAG API", version="2.0.0", lifespan=lifespan)
 
 # ────────────────────────────────────────────────────────────────────────────
 # CORS
@@ -79,12 +84,15 @@ app.add_middleware(
 # ────────────────────────────────────────────────────────────────────────────
 
 class AskRequest(BaseModel):
-    question:   str
-    class_name: Optional[str]   = None
-    subject:    Optional[str]   = None
-    score:      Optional[float] = None
-    board:      str             = "CBSE"
-    grade:      int             = 7
+    question:    str
+    class_name:  Optional[str]        = None
+    subject:     Optional[str]        = None
+    score:       Optional[float]       = None
+    board:       str                   = "CBSE"
+    grade:       int                   = 7
+    topic:       Optional[str]         = None
+    weak_topics: Optional[List[str]]   = None
+    bloom_level: Optional[str]         = None
 
 
 class Source(BaseModel):
@@ -119,8 +127,10 @@ class QuizResponse(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    status: str
-    chunks: int
+    status:  str
+    chunks:  int
+    backend: str
+    model:   str
 
 
 # ────────────────────────────────────────────────────────────────────────────
@@ -133,7 +143,14 @@ async def health():
         count = _collection.count() if _collection is not None else -1
     except Exception:
         count = -1
-    return {"status": "ok", "chunks": count}
+
+    active_model = OPENAI_MODEL if LLM_BACKEND == "openai" else NVIDIA_MODEL
+    return {
+        "status":  "ok",
+        "chunks":  count,
+        "backend": LLM_BACKEND,
+        "model":   active_model,
+    }
 
 
 # ── Non-streaming /ask (kept for compatibility) ──────────────────────────────
@@ -154,6 +171,9 @@ async def ask(req: AskRequest):
             score=req.score,
             board=req.board,
             grade=req.grade,
+            topic=req.topic,
+            weak_topics=req.weak_topics,
+            bloom_level=req.bloom_level,
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"RAG pipeline error: {exc}") from exc
@@ -200,6 +220,9 @@ async def ask_stream_endpoint(req: AskRequest):
                     score=req.score,
                     board=req.board,
                     grade=req.grade,
+                    topic=req.topic,
+                    weak_topics=req.weak_topics,
+                    bloom_level=req.bloom_level,
                 )
             )
 

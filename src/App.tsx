@@ -18,6 +18,7 @@ import { Progress } from './pages/Progress';
 import { Settings } from './pages/Settings';
 import { Assignments } from './pages/Assignments';
 import { ParentReport } from './pages/ParentReport';
+import { FoundationPage } from './pages/FoundationPage';
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode; isAuthenticated: boolean }> = ({
@@ -127,6 +128,15 @@ function AppContent() {
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <ParentReport />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/foundation"
+            element={
+              <ProtectedRoute isAuthenticated={isAuthenticated}>
+                <FoundationPage />
               </ProtectedRoute>
             }
           />

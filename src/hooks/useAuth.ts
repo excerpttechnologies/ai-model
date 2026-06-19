@@ -16,7 +16,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const STORAGE_KEY = 'testi_user';
+const STORAGE_KEY = 'edu ai_user';
 
 export const useAuth = (): AuthContextType => {
   const [user, setUser] = useState<User | null>(null);

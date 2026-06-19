@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-#  deploy.sh  —  Testi Student Assessment Platform  —  Linux VPS Deployment
+#  deploy.sh  —  edu ai Student Assessment Platform  —  Linux VPS Deployment
 #  Run this on your VPS as a non-root user with sudo privileges.
 #  Usage: bash deploy.sh
 # ============================================================================
@@ -9,13 +9,13 @@ set -e   # exit on any error
 # ── EDIT THESE ────────────────────────────────────────────────────────────────
 DOMAIN="YOUR_DOMAIN_OR_SERVER_IP"
 NVIDIA_API_KEY="nvapi-REPLACE_WITH_YOUR_KEY"
-PROJECT_DIR="/var/www/testi"
+PROJECT_DIR="/var/www/edu ai"
 REPO_URL="https://github.com/YOUR_USERNAME/YOUR_REPO.git"   # or use scp/rsync
 # ─────────────────────────────────────────────────────────────────────────────
 
 echo ""
 echo "======================================================"
-echo "  Testi Platform — VPS Deployment"
+echo "  edu ai Platform — VPS Deployment"
 echo "======================================================"
 echo ""
 
@@ -88,10 +88,10 @@ pnpm build
 # ── 8. Nginx config ───────────────────────────────────────────────────────────
 echo "[8/9] Configuring Nginx..."
 # Replace YOUR_DOMAIN placeholder in nginx.conf
-sed "s/YOUR_DOMAIN/$DOMAIN/g" nginx.conf | sudo tee /etc/nginx/sites-available/testi > /dev/null
+sed "s/YOUR_DOMAIN/$DOMAIN/g" nginx.conf | sudo tee /etc/nginx/sites-available/edu ai > /dev/null
 
 # Enable site
-sudo ln -sf /etc/nginx/sites-available/testi /etc/nginx/sites-enabled/testi
+sudo ln -sf /etc/nginx/sites-available/edu ai /etc/nginx/sites-enabled/edu ai
 # Remove default site if present
 sudo rm -f /etc/nginx/sites-enabled/default
 
@@ -103,7 +103,7 @@ sudo systemctl enable nginx
 echo "[9/9] Starting backend with PM2..."
 
 # Replace placeholders in ecosystem.config.js
-sed -i "s|/var/www/testi|$PROJECT_DIR|g" ecosystem.config.js
+sed -i "s|/var/www/edu ai|$PROJECT_DIR|g" ecosystem.config.js
 sed -i "s|nvapi-REPLACE_WITH_YOUR_KEY|$NVIDIA_API_KEY|g" ecosystem.config.js
 sed -i "s|YOUR_DOMAIN|$DOMAIN|g" ecosystem.config.js
 

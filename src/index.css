@@ -1,32 +1,40 @@
 @import 'tailwindcss';
 
 :root {
-  --primary: #6C63FF;
-  --primary-light: #8B80FF;
-  --secondary: #FF6584;
+  --primary: #FF6B35;
+  --primary-light: #FF8555;
+  --primary-dark: #E85A24;
+  --secondary: #FF8F5C;
   --success: #00D084;
   --warning: #FFB84D;
   --danger: #FF6B6B;
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F7F8FC;
-  --bg-tertiary: #F0F1F7;
-  --text-primary: #2D3748;
-  --text-secondary: #718096;
-  --text-light: #A0AEC0;
-  --border: #E2E8F0;
+  --bg-primary: #FDF8F5;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #FAF3EF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --text-light: #999999;
+  --border: #E8DDD6;
 
   /* ── Adaptive level tokens ── */
   --level-beginner:         #FF6B6B;
   --level-beginner-light:   rgba(255, 107, 107, 0.12);
   --level-beginner-border:  rgba(255, 107, 107, 0.35);
 
-  --level-intermediate:         #6C63FF;
-  --level-intermediate-light:   rgba(108, 99, 255, 0.12);
-  --level-intermediate-border:  rgba(108, 99, 255, 0.35);
+  --level-intermediate:         #FF6B35;
+  --level-intermediate-light:   rgba(255, 107, 53, 0.12);
+  --level-intermediate-border:  rgba(255, 107, 53, 0.35);
 
   --level-advanced:         #00D084;
   --level-advanced-light:   rgba(0, 208, 132, 0.12);
   --level-advanced-border:  rgba(0, 208, 132, 0.35);
+}
+
+@theme {
+  --color-primary: #FF6B35;
+  --color-background: #FDF8F5;
+  --color-foreground: #1A1A1A;
+  --color-muted-foreground: #666666;
 }
 
 * {

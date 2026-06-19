@@ -11,7 +11,7 @@ interface StatsCardProps {
 }
 
 const colorMap = {
-  primary: '#6C63FF',
+  primary: '#FF6B35',
   secondary: '#FF6584',
   success: '#00D084',
   warning: '#FFB84D'

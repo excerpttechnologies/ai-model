@@ -23,7 +23,7 @@ export const AssignmentCard: React.FC<AssignmentCardProps> = ({
     switch (status) {
       case 'active':    return '#00D084';
       case 'upcoming':  return '#FFB84D';
-      case 'completed': return '#6C63FF';
+      case 'completed': return '#FF6B35';
       default:          return '#A0AEC0';
     }
   };

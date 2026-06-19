@@ -15,8 +15,8 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const STORAGE_KEY        = 'testi_user';
-const PROFILE_STORAGE_KEY = 'testi_profile';
+const STORAGE_KEY        = 'edu ai_user';
+const PROFILE_STORAGE_KEY = 'edu ai_profile';
 
 const getInitialUser = (): User | null => {
   try {
