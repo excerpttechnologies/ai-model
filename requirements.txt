@@ -1,0 +1,9 @@
+# Python dependencies for rag_api.py + rag_query.py
+# Install with:  venv/bin/pip install -r requirements.txt
+
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+chromadb==0.5.23
+requests==2.32.3
+openai==1.57.0          # NVIDIA Nemotron via OpenAI-compatible endpoint
+anthropic==0.40.0       # optional: only needed if LLM_BACKEND=anthropic
