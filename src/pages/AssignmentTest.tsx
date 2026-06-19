@@ -20,7 +20,24 @@ export const AssignmentTest: React.FC = () => {
   const [isReview, setIsReview] = useState(false);
 
   const assignment = ASSIGNMENTS.find(a => a.id === assignmentId);
-  const questions = QUESTIONS.filter(q => q.assignmentId === assignmentId);
+  
+  // Map assignment subject to question subject slug
+  const subjectToSlug: Record<string, string> = {
+    'Mathematics': 'math',
+    'Math': 'math',
+    'Science': 'science',
+    'Social Science': 'social-science',
+    'English': 'english',
+    'Hindi': 'hindi',
+    'EVS': 'evs',
+  };
+  
+  // Filter questions by subject slug matching assignment's subject
+  const subjectSlug = assignment ? subjectToSlug[assignment.subject] : undefined;
+  const questions = subjectSlug 
+    ? QUESTIONS.filter(q => q.assignmentId === subjectSlug)
+    : [];
+  
   const result = RESULTS.find(r => r.assignmentId === assignmentId);
 
   useEffect(() => {
@@ -30,7 +47,7 @@ export const AssignmentTest: React.FC = () => {
   }, [testStarted, assignment, isReview]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (testStarted && timeLeft > 0 && !isReview) {
       interval = setInterval(() => {
         setTimeLeft(prev => {
