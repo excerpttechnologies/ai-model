@@ -199,7 +199,7 @@ export const ChatBot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([{
     id: '0', type: 'bot',
     rawContent:
-      `Hello! 👋 I'm your AI Teacher powered by NVIDIA Nemotron.\n` +
+      `Hello! 👋 I'm your AI Teacher powered by ai.\n` +
       `Profile: Grade ${grade} · ${board} Board · ${lc.label} Level ${lc.emoji}\n\n` +
       `Ask me any concept, topic, or problem from your curriculum!\n` +
       `Example: "Explain linear equations" or "Solve x + 5 = 12"`,
@@ -311,7 +311,7 @@ export const ChatBot: React.FC = () => {
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', fontWeight: '600', color: '#76b900', backgroundColor: 'rgba(118,185,0,0.1)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(118,185,0,0.3)' }}>
-              <Zap size={12} /> Nemotron-3-Ultra
+              <Zap size={12} />
             </span>
             <span style={{ fontSize: '12px', fontWeight: '700', color: lc.color, backgroundColor: lc.colorLight, padding: '4px 12px', borderRadius: '20px', border: `1px solid ${lc.colorBorder}` }}>
               {lc.emoji} {lc.label}

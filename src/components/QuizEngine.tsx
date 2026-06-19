@@ -3,6 +3,7 @@
  * Dynamic AI-powered quiz component — calls /api/quiz (FastAPI backend).
  * Adapts question difficulty based on student level (beginner / intermediate / advanced).
  * Triggers FoundationMode automatically when score < 50%.
+ * Falls back to frontend questions when backend has no content.
  */
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,6 +13,7 @@ import { FoundationMode } from './FoundationMode';
 import { LEVEL_CONFIG, levelFromScore, scoreColor } from '../lib/levelUtils';
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { getQuestionsBySubject } from '../data/subjectQuestions';
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const RAG_API_BASE: string = (import.meta as any).env?.VITE_RAG_API_URL ?? '/api';
@@ -65,8 +67,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   const [answers,    setAnswers]    = useState<Record<number, string>>({});
   const [score,      setScore]      = useState<number | null>(null);
   const [errorMsg,   setErrorMsg]   = useState('');
+  const [useFallback, setUseFallback] = useState(false);
 
-  // ── Generate quiz from backend ────────────────────────────────────────────
+  // ── Generate quiz from backend OR fallback to frontend questions ──────────
   const generateQuiz = useCallback(async () => {
     setPhase('loading');
     setQuestions([]);
@@ -74,32 +77,53 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     setCurrent(0);
     setScore(null);
     setErrorMsg('');
+    setUseFallback(false);
 
+    // Try backend first if RAG_API_BASE is configured
+    if (RAG_API_BASE && RAG_API_BASE !== '/api') {
+      try {
+        // Enhanced topic description with subject context
+        const enhancedTopic = subject 
+          ? `${subject} - ${activeTopic}` 
+          : activeTopic;
+
+        const resp = await fetch(`${RAG_API_BASE}/quiz`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topic:      enhancedTopic,
+            class_name: String(grade),
+            subject:    subject ?? 'General',
+            score:      avgScore,
+            board,
+            grade,
+            difficulty: avgScore && avgScore < 50 ? 'easy' : avgScore && avgScore < 70 ? 'medium' : 'hard',
+          }),
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.questions && data.questions.length > 0) {
+            setQuestions(data.questions);
+            setPhase('active');
+            return; // Success! Exit early
+          }
+        }
+      } catch (e: any) {
+        console.warn('Backend quiz generation failed, using fallback questions:', e.message);
+      }
+    }
+
+    // Fallback to frontend questions
     try {
-      const resp = await fetch(`${RAG_API_BASE}/quiz`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          topic:      activeTopic,
-          class_name: String(grade),
-          subject:    subject ?? null,
-          score:      avgScore,
-          board,
-          grade,
-        }),
-      });
-
-      if (!resp.ok) {
-        const err = await resp.json().catch(() => ({ detail: resp.statusText }));
-        throw new Error(err.detail ?? `HTTP ${resp.status}`);
+      const fallbackQuestions = getQuestionsBySubject(subject ?? 'General', 10);
+      if (fallbackQuestions.length > 0) {
+        setQuestions(fallbackQuestions);
+        setUseFallback(true);
+        setPhase('active');
+      } else {
+        throw new Error('No questions available for this subject.');
       }
-
-      const data = await resp.json();
-      if (!data.questions || data.questions.length === 0) {
-        throw new Error('No questions returned. Check that your curriculum DB has content for this topic.');
-      }
-      setQuestions(data.questions);
-      setPhase('active');
     } catch (e: any) {
       setErrorMsg(e.message);
       setPhase('error');
@@ -132,9 +156,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
   // ── IDLE ──────────────────────────────────────────────────────────────────
   if (phase === 'idle' || phase === 'error') return wrapper(
     <div style={{ textAlign: 'center', padding: '24px 0' }}>
-      <div style={{ fontSize: '48px', marginBottom: '12px' }}>🧪</div>
+      <div style={{ fontSize: '48px', marginBottom: '12px' }}>
+        {subject === 'Mathematics' ? '➕' : subject === 'Science' ? '🔬' : subject === 'English' ? '📚' : subject === 'Social Studies' ? '🌍' : '🧪'}
+      </div>
       <h3 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '6px' }}>
-        AI Quiz Engine
+        {subject ? `${subject} Quiz` : 'AI Quiz Engine'}
       </h3>
       <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '6px' }}>
         Topic: <strong style={{ color: 'var(--text-primary)' }}>{activeTopic}</strong>
@@ -146,6 +172,11 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '12px', backgroundColor: 'rgba(21,101,192,0.1)', color: '#1565C0', fontWeight: '700' }}>
           {board} · Grade {grade}
         </span>
+        {subject && (
+          <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '12px', backgroundColor: 'rgba(255,107,53,0.1)', color: '#FF6B35', fontWeight: '700' }}>
+            📖 {subject}
+          </span>
+        )}
       </div>
       {phase === 'error' && (
         <div style={{ padding: '10px 16px', borderRadius: '8px', backgroundColor: '#FFE6E6', color: '#FF6B6B', fontSize: '13px', marginBottom: '16px', whiteSpace: 'pre-wrap' }}>
@@ -154,7 +185,7 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
       )}
       <Button variant="primary" onClick={generateQuiz} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
         <Zap size={16} />
-        {phase === 'error' ? 'Retry' : 'Generate AI Quiz'}
+        {phase === 'error' ? 'Retry' : `Generate ${subject || 'AI'} Quiz`}
       </Button>
     </div>
   );
@@ -164,9 +195,9 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
     <div style={{ textAlign: 'center', padding: '40px 0' }}>
       <Loader2 size={40} style={{ color: 'var(--primary)', animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
       <style>{`@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}`}</style>
-      <p style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Generating AI Questions…</p>
+      <p style={{ color: 'var(--text-primary)', fontWeight: '600' }}>Generating Questions…</p>
       <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '4px' }}>
-        NVIDIA Nemotron is crafting {lc.label}-level questions
+        Preparing {subject || 'AI'} questions for your level
       </p>
     </div>
   );
@@ -182,7 +213,16 @@ export const QuizEngine: React.FC<QuizEngineProps> = ({
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
           <div>
-            <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>AI Quiz</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)', margin: 0 }}>
+                {subject ? `${subject} Quiz` : 'AI Quiz'}
+              </h3>
+              {useFallback && (
+                <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '10px', backgroundColor: 'rgba(0,180,216,0.1)', color: '#00B4D8', fontWeight: '700' }}>
+                  📚 Curated
+                </span>
+              )}
+            </div>
             <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>{activeTopic}</p>
           </div>
           <span style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '12px', backgroundColor: lc.colorLight, color: lc.color, fontWeight: '700' }}>

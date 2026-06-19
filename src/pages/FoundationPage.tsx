@@ -126,7 +126,7 @@ export const FoundationPage: React.FC = () => {
             onOpenChatbot={() => navigate('/chatbot')}
           />
 
-          {/* ── AI Quiz section ── */}
+          {/* ── AI Quiz section with subject selector ── */}
           <div style={{ marginTop: '32px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
               <BookOpen size={20} style={{ color: lc.color }} />
@@ -137,10 +137,83 @@ export const FoundationPage: React.FC = () => {
             <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '0' }}>
               AI-generated {isFoundation ? 'very easy' : 'basic + intermediate'} questions tailored for your recovery path.
             </p>
-            <QuizEngine
-              topic={weak[0] ?? `Grade ${studentProfile?.grade ?? 7} basics`}
-              subject={undefined}
-            />
+            
+            {/* Subject selector tabs */}
+            <div style={{ display: 'flex', gap: '8px', marginTop: '16px', marginBottom: '8px', flexWrap: 'wrap' }}>
+              {[
+                { key: 'math', label: '➕ Mathematics', color: '#FF6B35' },
+                { key: 'science', label: '🔬 Science', color: '#00B4D8' },
+                { key: 'english', label: '📚 English', color: '#9B59B6' },
+                { key: 'social', label: '🌍 Social Studies', color: '#FFB84D' },
+              ].map(subj => (
+                <button
+                  key={subj.key}
+                  onClick={() => {
+                    const elem = document.getElementById(`quiz-engine-${subj.key}`);
+                    if (elem) elem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }}
+                  style={{
+                    padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                    backgroundColor: `${subj.color}18`, color: subj.color, fontWeight: '600', fontSize: '13px',
+                    transition: 'all 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = `${subj.color}30`;
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = `${subj.color}18`;
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }}
+                >
+                  {subj.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Mathematics Quiz */}
+            <div id="quiz-engine-math" style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#FF6B35', marginBottom: '8px' }}>
+                ➕ Mathematics
+              </h3>
+              <QuizEngine
+                topic={`Grade ${studentProfile?.grade ?? 7} Mathematics`}
+                subject="Mathematics"
+              />
+            </div>
+
+            {/* Science Quiz */}
+            <div id="quiz-engine-science" style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#00B4D8', marginBottom: '8px' }}>
+                🔬 Science
+              </h3>
+              <QuizEngine
+                topic={`Grade ${studentProfile?.grade ?? 7} Science`}
+                subject="Science"
+              />
+            </div>
+
+            {/* English Quiz */}
+            <div id="quiz-engine-english" style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#9B59B6', marginBottom: '8px' }}>
+                📚 English
+              </h3>
+              <QuizEngine
+                topic={`Grade ${studentProfile?.grade ?? 7} English`}
+                subject="English"
+              />
+            </div>
+
+            {/* Social Studies Quiz */}
+            <div id="quiz-engine-social" style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#FFB84D', marginBottom: '8px' }}>
+                🌍 Social Studies
+              </h3>
+              <QuizEngine
+                topic={`Grade ${studentProfile?.grade ?? 7} Social Studies`}
+                subject="Social Studies"
+              />
+            </div>
           </div>
 
         </motion.div>
